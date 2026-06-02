@@ -836,7 +836,7 @@
     const b = BRANDS[idx];
     document.getElementById("modal-brand-name").textContent = b.brand;
     document.getElementById("modal-para").textContent = b.para;
-    document.getElementById("modal-ebay").href = EBAY_BASE + encodeURIComponent(b.ebay);
+    document.getElementById("modal-ebay").href = EBAY_BASE + b.ebay;
 
     // Logo — try Wikimedia first, then logo.dev, then "No image found"
     const logoWrap = document.getElementById("modal-logo");
@@ -865,7 +865,7 @@
       const c = b.categories[cat];
       document.getElementById("name-" + cat).textContent = c.name;
       document.getElementById("para-" + cat).textContent = c.para;
-      document.getElementById("ebay-" + cat).href = EBAY_BASE + encodeURIComponent(c.ebay);
+      document.getElementById("ebay-" + cat).href = EBAY_BASE + c.ebay;
 
       const imgWrap = document.getElementById("img-" + cat);
       if (c.img) {
