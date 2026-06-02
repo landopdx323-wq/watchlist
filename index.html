@@ -653,7 +653,7 @@
        prestige: 0-10,
        value: 0-10,
        para: "Brand evaluation paragraph...",
-       logo: "https://direct-image-url.png" or null,
+       logo: logoUrl("brand-domain.com") or null,
        ebay: "Brand+Name+watch",
        categories: {
          value:     { name: "Model Name", para: "Why selected...", img: "url or null", ebay: "Model+Search+Term" },
@@ -663,12 +663,12 @@
        }
      }
   ============================================= */
-  const WORKER = "https://proud-pond-8560.landopdx-323.workers.dev";
+  const LOGODEV_KEY = "pk_fIvRtMWtSdeohhABAjOqKA";
 
-  // Route all image URLs through the Cloudflare Worker proxy
-  function img(url) {
-    if (!url) return null;
-    return WORKER + "/?url=" + encodeURIComponent(url);
+  // Get logo URL from Logo.dev using brand domain
+  function logoUrl(domain) {
+    if (!domain) return null;
+    return `https://img.logo.dev/${domain}?token=${LOGODEV_KEY}&size=92&format=png`;
   }
 
   const BRANDS = [
@@ -680,7 +680,7 @@
       prestige: 5,
       value: 7,
       para: "88 Rue du Rhône is a young Swiss watch brand founded in 2012 by Pierre and Elie Bernheim, grandsons of the legendary Raymond Weil. Built around the concept of accessible Swiss luxury, the brand carved a niche in the £300–£900 price bracket where genuine Swiss-made credentials are rare. Its name references a fictitious address on Geneva's most prestigious street — a building number that doesn't exist, replaced instead by a view of the Rhône leaving Lake Geneva — lending the brand a romantic, mysterious identity. While its horological depth is modest compared to established maisons, it earned genuine retail traction at Selfridges, Bloomingdale's and Tourneau, and served as official timepiece partner of the BAFTA awards. The brand filed for bankruptcy in 2016 and ceased operations around 2020, which limits its long-term prestige and collector appeal, but its value proposition during its active years was genuinely strong for entry-level Swiss watches.",
-      logo: img("https://www.jurawatches.co.uk/cdn/shop/files/88-Rue-Du-Rhone-Logo.png"),
+      logo: logoUrl("88rdr.com"),
       ebay: "88+Rue+du+Rhone+watch",
       categories: {
         value: {
