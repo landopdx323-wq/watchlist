@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Watch Brand Rankings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0e0f;
+      --bg2: #161618;
+      --bg3: #1e1e21;
+      --bg4: #26262a;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.13);
+      --text: #f0ede8;
+      --text2: #9d9a94;
+      --text3: #5e5c58;
+      --gold: #c9a84c;
+      --gold2: #e8c97a;
+      --gold-bg: rgba(201,168,76,0.1);
+      --green: #4caf7d;
+      --green-bg: rgba(76,175,125,0.12);
+      --amber: #e8a030;
+      --amber-bg: rgba(232,160,48,0.12);
+      --red: #e05c5c;
+      --red-bg: rgba(224,92,92,0.12);
+      --blue: #5b9bd5;
+      --blue-bg: rgba(91,155,213,0.12);
+      --radius: 10px;
+      --radius-sm: 6px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2rem;
+    }
+    .site-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: clamp(2rem, 5vw, 3rem);
+      letter-spacing: 0.02em;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .site-header h1 span { color: var(--gold); }
+    .site-header p {
+      margin-top: 0.5rem;
+      font-size: 14px;
+      color: var(--text2);
+      font-weight: 300;
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Stat cards ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+    .stat-card .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text3);
+      margin-bottom: 4px;
+    }
+    .stat-card .value {
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .stat-card .value.sm { font-size: 14px; padding-top: 3px; }
+
+    /* ── Controls ── */
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+    .search-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      stroke: var(--text3);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      pointer-events: none;
+    }
+    input[type="text"], select {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    input[type="text"] { padding-left: 36px; }
+    input[type="text"]:focus, select:focus { border-color: var(--gold); }
+    input[type="text"]::placeholder { color: var(--text3); }
+    select { width: auto; cursor: pointer; appearance: none; padding-right: 32px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235e5c58' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
+    select option { background: #1e1e21; }
+
+    /* ── Table ── */
+    .table-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg2);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      table-layout: fixed;
+    }
+    thead { background: var(--bg3); }
+    th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text3);
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      transition: color 0.15s;
+    }
+    th:hover { color: var(--text2); }
+    th.active { color: var(--gold); }
+    th .sort-arrow { display: inline-block; margin-left: 4px; opacity: 0.35; font-size: 10px; }
+    th.active .sort-arrow { opacity: 1; }
+    .col-brand { width: 30%; }
+    .col-score { width: 11.6%; text-align: center; }
+    td { padding: 11px 16px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    td.col-score { text-align: center; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr { cursor: pointer; transition: background 0.12s; }
+    tbody tr:hover td { background: var(--bg3); }
+    .brand-cell strong { display: block; font-weight: 500; }
+    .brand-cell small { font-size: 12px; color: var(--text3); }
+    .rank-num { color: var(--text3); font-size: 12px; width: 32px; }
+
+    /* ── Score pills ── */
+    .pill {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .pill-high { background: var(--green-bg); color: var(--green); }
+    .pill-mid  { background: var(--amber-bg); color: var(--amber); }
+    .pill-low  { background: var(--red-bg);   color: var(--red);   }
+    .pill-none { color: var(--text3); font-style: italic; font-size: 12px; }
+    .overall-score { font-size: 15px; font-weight: 500; }
+
+    /* ── Pagination ── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1rem;
+      font-size: 13px;
+      color: var(--text3);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .page-btns { display: flex; gap: 6px; align-items: center; }
+    .page-btn {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      color: var(--text2);
+      font-size: 13px;
+      padding: 5px 11px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .page-btn:hover:not(:disabled) { background: var(--bg3); color: var(--text); }
+    .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    /* ── Modal backdrop ── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ── Modal ── */
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 580px;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 0;
+      transform: translateY(12px);
+      transition: transform 0.2s;
+    }
+    .modal-backdrop.open .modal { transform: translateY(0); }
+    .modal::-webkit-scrollbar { width: 5px; }
+    .modal::-webkit-scrollbar-track { background: transparent; }
+    .modal::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+
+    .modal-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 1.5rem 1.5rem 1rem;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-top-left { flex: 1; }
+    .modal-brand-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    .modal-score-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .score-badge {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--text2);
+      text-align: center;
+    }
+    .score-badge strong { display: block; font-size: 17px; font-weight: 500; color: var(--text); line-height: 1.2; }
+    .score-badge.overall { border-color: var(--gold); background: var(--gold-bg); }
+    .score-badge.overall strong { color: var(--gold2); }
+    .modal-logo-wrap {
+      width: 80px;
+      height: 64px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border2);
+      background: var(--bg3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .modal-logo-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+    .no-img-text { font-size: 10px; color: var(--text3); text-align: center; line-height: 1.4; padding: 4px; }
+    .modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text3);
+      font-size: 22px;
+      line-height: 1;
+      padding: 2px;
+      transition: color 0.15s;
+      flex-shrink: 0;
+    }
+    .modal-close:hover { color: var(--text); }
+
+    .modal-body { padding: 1.25rem 1.5rem; }
+    .modal-para {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+    .ebay-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--blue);
+      text-decoration: none;
+      border: 1px solid rgba(91,155,213,0.25);
+      border-radius: var(--radius-sm);
+      padding: 7px 14px;
+      margin-bottom: 1.25rem;
+      transition: background 0.15s;
+    }
+    .ebay-link:hover { background: var(--blue-bg); }
+    .ebay-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* ── Category accordion ── */
+    .cat-section { border-top: 1px solid var(--border); }
+    .cat-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cat-toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      transition: color 0.15s;
+    }
+    .cat-toggle:hover .cat-toggle-label { color: var(--text); }
+    .cat-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .cat-icon.value    { background: var(--green-bg); color: var(--green); }
+    .cat-icon.prestige { background: var(--gold-bg);  color: var(--gold2); }
+    .cat-icon.unique   { background: var(--blue-bg);  color: var(--blue);  }
+    .cat-icon.history  { background: rgba(160,100,220,0.12); color: #c084e8; }
+    .cat-chevron {
+      width: 16px;
+      height: 16px;
+      stroke: var(--text3);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .cat-toggle.open .cat-chevron { transform: rotate(180deg); }
+    .cat-body { display: none; padding-bottom: 1rem; }
+    .cat-body.open { display: block; }
+    .watch-img-wrap {
+      width: 100%;
+      height: 150px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .watch-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+    .watch-model-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .watch-para {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.65;
+      margin-bottom: 10px;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--text3);
+      font-size: 14px;
+    }
+    .empty-state .icon {
+      font-size: 32px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    /* ── Divider line ── */
+    .gold-line {
+      width: 48px;
+      height: 2px;
+      background: var(--gold);
+      margin: 0.5rem 0 1.5rem;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="site-header">
+    <h1>Watch Brand <span>Rankings</span></h1>
+    <div class="gold-line"></div>
+    <p>Scored across uniqueness, history, prestige &amp; value &mdash; click any brand to explore</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="label">Total brands</div>
+      <div class="value" id="stat-total">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Avg overall score</div>
+      <div class="value" id="stat-avg">&mdash;</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Top rated</div>
+      <div class="value sm" id="stat-top">&mdash;</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Best value</div>
+      <div class="value sm" id="stat-val">&mdash;</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Most unique</div>
+      <div class="value sm" id="stat-unique">&mdash;</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Most prestigious</div>
+      <div class="value sm" id="stat-prestige">&mdash;</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="search" placeholder="Search brands..." oninput="filterTable()" />
+    </div>
+    <select id="filter-cat" onchange="filterTable()">
+      <option value="overall">Sort: Overall</option>
+      <option value="uniqueness">Sort: Uniqueness</option>
+      <option value="history">Sort: History</option>
+      <option value="prestige">Sort: Prestige</option>
+      <option value="value">Sort: Value</option>
+    </select>
+    <select id="filter-min" onchange="filterTable()">
+      <option value="0">All scores</option>
+      <option value="7">7+ overall</option>
+      <option value="8">8+ overall</option>
+      <option value="9">9+ overall</option>
+    </select>
+  </div>
+
+  <div class="table-wrap">
+    <table id="brand-table">
+      <thead>
+        <tr>
+          <th class="col-brand" onclick="sortTable('brand')">#&nbsp; Brand <span class="sort-arrow" id="arrow-brand">&#8597;</span></th>
+          <th class="col-score" onclick="sortTable('uniqueness')">Unique <span class="sort-arrow" id="arrow-uniqueness">&#8597;</span></th>
+          <th class="col-score" onclick="sortTable('history')">History <span class="sort-arrow" id="arrow-history">&#8597;</span></th>
+          <th class="col-score" onclick="sortTable('prestige')">Prestige <span class="sort-arrow" id="arrow-prestige">&#8597;</span></th>
+          <th class="col-score" onclick="sortTable('value')">Value <span class="sort-arrow" id="arrow-value">&#8597;</span></th>
+          <th class="col-score" onclick="sortTable('overall')">Overall <span class="sort-arrow" id="arrow-overall">&#8597;</span></th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <span id="page-info">Showing 0 brands</span>
+    <div class="page-btns">
+      <button class="page-btn" id="btn-prev" onclick="changePage(-1)" disabled>&larr;</button>
+      <span id="page-num" style="font-size:13px; color:var(--text2);">Page 1 of 1</span>
+      <button class="page-btn" id="btn-next" onclick="changePage(1)">&rarr;</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Modal ── -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="closeModalOutside(event)" role="dialog" aria-modal="true" aria-labelledby="modal-brand-name">
+  <div class="modal" id="modal">
+
+    <div class="modal-top">
+      <div class="modal-top-left">
+        <div class="modal-brand-name" id="modal-brand-name"></div>
+        <div class="modal-score-row" id="modal-scores"></div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
+        <button class="modal-close" onclick="closeModal()" aria-label="Close">&#x2715;</button>
+        <div class="modal-logo-wrap" id="modal-logo">
+          <div class="no-img-text">No image<br>found</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <p class="modal-para" id="modal-para"></p>
+
+      <a class="ebay-link" id="modal-ebay" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Search this brand on eBay
+      </a>
+
+      <!-- Value -->
+      <div class="cat-section">
+        <div class="cat-toggle" id="toggle-value" onclick="toggleCat('value')">
+          <span class="cat-toggle-label">
+            <span class="cat-icon value">&#x24;</span>
+            Best value watch
+          </span>
+          <svg class="cat-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="cat-body" id="cat-value">
+          <div class="watch-img-wrap" id="img-value"><div class="no-img-text">No image found</div></div>
+          <div class="watch-model-name" id="name-value"></div>
+          <p class="watch-para" id="para-value"></p>
+          <a class="ebay-link" id="ebay-value" href="#" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Search this watch on eBay
+          </a>
+        </div>
+      </div>
+
+      <!-- Prestige -->
+      <div class="cat-section">
+        <div class="cat-toggle" id="toggle-prestige" onclick="toggleCat('prestige')">
+          <span class="cat-toggle-label">
+            <span class="cat-icon prestige">&#x2605;</span>
+            Best prestige watch
+          </span>
+          <svg class="cat-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="cat-body" id="cat-prestige">
+          <div class="watch-img-wrap" id="img-prestige"><div class="no-img-text">No image found</div></div>
+          <div class="watch-model-name" id="name-prestige"></div>
+          <p class="watch-para" id="para-prestige"></p>
+          <a class="ebay-link" id="ebay-prestige" href="#" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Search this watch on eBay
+          </a>
+        </div>
+      </div>
+
+      <!-- Uniqueness -->
+      <div class="cat-section">
+        <div class="cat-toggle" id="toggle-uniqueness" onclick="toggleCat('uniqueness')">
+          <span class="cat-toggle-label">
+            <span class="cat-icon unique">&#x2731;</span>
+            Most unique watch
+          </span>
+          <svg class="cat-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="cat-body" id="cat-uniqueness">
+          <div class="watch-img-wrap" id="img-uniqueness"><div class="no-img-text">No image found</div></div>
+          <div class="watch-model-name" id="name-uniqueness"></div>
+          <p class="watch-para" id="para-uniqueness"></p>
+          <a class="ebay-link" id="ebay-uniqueness" href="#" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Search this watch on eBay
+          </a>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="cat-section">
+        <div class="cat-toggle" id="toggle-history" onclick="toggleCat('history')">
+          <span class="cat-toggle-label">
+            <span class="cat-icon history">&#x29D7;</span>
+            Best historical watch
+          </span>
+          <svg class="cat-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="cat-body" id="cat-history">
+          <div class="watch-img-wrap" id="img-history"><div class="no-img-text">No image found</div></div>
+          <div class="watch-model-name" id="name-history"></div>
+          <p class="watch-para" id="para-history"></p>
+          <a class="ebay-link" id="ebay-history" href="#" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Search this watch on eBay
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  /* =============================================
+     BRAND DATA
+     Add brand objects to this array.
+     Each object follows this schema:
+
+     {
+       brand: "Brand Name",
+       country: "Country",
+       uniqueness: 0-10,
+       history: 0-10,
+       prestige: 0-10,
+       value: 0-10,
+       para: "Brand evaluation paragraph...",
+       logo: "https://direct-image-url.png" or null,
+       ebay: "Brand+Name+watch",
+       categories: {
+         value:     { name: "Model Name", para: "Why selected...", img: "url or null", ebay: "Model+Search+Term" },
+         prestige:  { name: "Model Name", para: "Why selected...", img: "url or null", ebay: "Model+Search+Term" },
+         uniqueness:{ name: "Model Name", para: "Why selected...", img: "url or null", ebay: "Model+Search+Term" },
+         history:   { name: "Model Name", para: "Why selected...", img: "url or null", ebay: "Model+Search+Term" }
+       }
+     }
+  ============================================= */
+  const BRANDS = [
+    {
+      brand: "88 Rue du Rhône",
+      country: "Switzerland",
+      uniqueness: 6,
+      history: 4,
+      prestige: 5,
+      value: 7,
+      para: "88 Rue du Rhône is a young Swiss watch brand founded in 2012 by Pierre and Elie Bernheim, grandsons of the legendary Raymond Weil. Built around the concept of accessible Swiss luxury, the brand carved a niche in the £300–£900 price bracket where genuine Swiss-made credentials are rare. Its name references a fictitious address on Geneva's most prestigious street — a building number that doesn't exist, replaced instead by a view of the Rhône leaving Lake Geneva — lending the brand a romantic, mysterious identity. While its horological depth is modest compared to established maisons, it earned genuine retail traction at Selfridges, Bloomingdale's and Tourneau, and served as official timepiece partner of the BAFTA awards. The brand filed for bankruptcy in 2016 and ceased operations around 2020, which limits its long-term prestige and collector appeal, but its value proposition during its active years was genuinely strong for entry-level Swiss watches.",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/88_Rue_du_Rhone_logo.svg/320px-88_Rue_du_Rhone_logo.svg.png",
+      ebay: "88+Rue+du+Rhone+watch",
+      categories: {
+        value: {
+          name: "Double 8 Origin Automatic (Ref. 87WA120041)",
+          para: "The Double 8 Origin automatic represents the brand's best value proposition — a genuine Swiss-made automatic movement housed in a 42mm stainless steel case with sapphire crystal, at a price point that undercut almost every comparable Swiss competitor. For buyers seeking an entry into automatic watchmaking without compromising on Swiss provenance, this reference delivered exceptional bang for the buck.",
+          img: null,
+          ebay: "88+Rue+du+Rhone+Double+8+Origin+Automatic"
+        },
+        prestige: {
+          name: "Double 8 Origin Chronograph",
+          para: "The chronograph variant of the Double 8 Origin sits at the top of the brand's prestige hierarchy. Featuring a Swiss-made chronograph movement, a polished steel case and the brand's signature Arabic '8' marker, it was the piece most associated with the brand's BAFTA partnership and its red-carpet-adjacent identity. Among collectors of the brand, it is the reference most likely to be remembered.",
+          img: null,
+          ebay: "88+Rue+du+Rhone+Chronograph"
+        },
+        uniqueness: {
+          name: "Essentia (Diamond Double 8 Origin)",
+          para: "The Essentia is the most distinctive piece the brand produced — a 35mm ladies' watch set with exactly 88 diamonds around the bezel, a mother-of-pearl dial with a single diamond index at 8 o'clock, and a case back engraved with eight 8-shaped hour markers. The numerological symbolism woven into every design detail makes it the brand's most singular and conceptually coherent creation.",
+          img: null,
+          ebay: "88+Rue+du+Rhone+Essentia+diamond"
+        },
+        history: {
+          name: "Double 8 Origin Launch Edition (2012)",
+          para: "The original Double 8 Origin collection, launched exclusively at Selfridges in July 2012, is the piece that defines the brand's short but genuine history. It marked the Bernheim grandsons stepping out from under the Raymond Weil legacy to build something independent, and was the watch that secured listings at major department stores across the US and Europe within its first year. For any future collector of the brand, the early launch references carry the most historical significance.",
+          img: null,
+          ebay: "88+Rue+du+Rhone+Double+8+Origin+2012"
+        }
+      }
+    }
+  ];
+
+  /* =============================================
+     TABLE LOGIC
+  ============================================= */
+  const EBAY_BASE = "https://www.ebay.com/sch/i.html?_nkw=";
+  const PER_PAGE = 30;
+  let filtered = [];
+  let sortKey = "overall";
+  let sortDir = "desc";
+  let page = 1;
+
+  function overall(b) {
+    return parseFloat(((b.uniqueness + b.history + b.prestige + b.value) / 4).toFixed(2));
+  }
+
+  function pillClass(s) {
+    if (s == null) return "pill-none";
+    if (s >= 7.5) return "pill-high";
+    if (s >= 5)   return "pill-mid";
+    return "pill-low";
+  }
+
+  function pill(s) {
+    if (s == null) return '<span class="pill-none">&mdash;</span>';
+    return `<span class="pill ${pillClass(s)}">${s}</span>`;
+  }
+
+  function updateStats() {
+    const n = BRANDS.length;
+    document.getElementById("stat-total").textContent = n;
+    if (n === 0) return;
+    const avg = (BRANDS.reduce((a, b) => a + overall(b), 0) / n).toFixed(1);
+    document.getElementById("stat-avg").textContent = avg;
+    const top     = BRANDS.slice().sort((a,b) => overall(b) - overall(a))[0];
+    const bestVal = BRANDS.slice().sort((a,b) => b.value - a.value)[0];
+    const bestUniq = BRANDS.slice().sort((a,b) => b.uniqueness - a.uniqueness)[0];
+    const bestPres = BRANDS.slice().sort((a,b) => b.prestige - a.prestige)[0];
+    document.getElementById("stat-top").textContent     = top     ? top.brand     : "—";
+    document.getElementById("stat-val").textContent     = bestVal ? bestVal.brand : "—";
+    document.getElementById("stat-unique").textContent  = bestUniq? bestUniq.brand: "—";
+    document.getElementById("stat-prestige").textContent= bestPres? bestPres.brand: "—";
+  }
+
+  function filterTable() {
+    const q   = document.getElementById("search").value.toLowerCase().trim();
+    const min = parseFloat(document.getElementById("filter-min").value);
+    const cat = document.getElementById("filter-cat").value;
+    filtered = BRANDS.filter(b => {
+      const mq  = !q || b.brand.toLowerCase().includes(q) || (b.country||"").toLowerCase().includes(q);
+      const mov = overall(b) >= min;
+      return mq && mov;
+    });
+    sortKey = cat;
+    sortDir = cat === "brand" ? "asc" : "desc";
+    page = 1;
+    renderTable();
+  }
+
+  function sortTable(key) {
+    if (sortKey === key) { sortDir = sortDir === "asc" ? "desc" : "asc"; }
+    else { sortKey = key; sortDir = key === "brand" ? "asc" : "desc"; }
+    document.getElementById("filter-cat").value = ["uniqueness","history","prestige","value","overall"].includes(key) ? key : "overall";
+    page = 1;
+    renderTable();
+  }
+
+  function changePage(dir) {
+    const total = Math.ceil(filtered.length / PER_PAGE);
+    page = Math.max(1, Math.min(total, page + dir));
+    renderTable();
+  }
+
+  function renderTable() {
+    const keys = ["brand","uniqueness","history","prestige","value","overall"];
+    keys.forEach(k => {
+      const th = document.getElementById("arrow-" + k);
+      if (th) th.textContent = sortKey === k ? (sortDir === "asc" ? "↑" : "↓") : "↕";
+    });
+    document.querySelectorAll("th").forEach(th => th.classList.remove("active"));
+    const idx = keys.indexOf(sortKey);
+    if (idx >= 0) document.querySelectorAll("th")[idx]?.classList.add("active");
+
+    const sorted = filtered.slice().sort((a, b) => {
+      let av = sortKey === "overall" ? overall(a) : sortKey === "brand" ? a.brand : a[sortKey];
+      let bv = sortKey === "overall" ? overall(b) : sortKey === "brand" ? b.brand : b[sortKey];
+      if (typeof av === "string") return sortDir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
+      return sortDir === "asc" ? av - bv : bv - av;
+    });
+
+    const start = (page - 1) * PER_PAGE;
+    const slice = sorted.slice(start, start + PER_PAGE);
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+
+    const tbody = document.getElementById("table-body");
+    if (slice.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><span class="icon">&#x231B;</span>No brands added yet &mdash; check back soon</div></td></tr>`;
+    } else {
+      tbody.innerHTML = slice.map((b, i) => {
+        const globalRank = start + i + 1;
+        const ov = overall(b);
+        return `<tr onclick="openModal(${BRANDS.indexOf(b)})">
+          <td class="col-brand brand-cell"><strong>${globalRank}.&nbsp; ${b.brand}</strong><small>${b.country || ""}</small></td>
+          <td class="col-score">${pill(b.uniqueness)}</td>
+          <td class="col-score">${pill(b.history)}</td>
+          <td class="col-score">${pill(b.prestige)}</td>
+          <td class="col-score">${pill(b.value)}</td>
+          <td class="col-score"><span class="overall-score ${pillClass(ov)}">${ov.toFixed(1)}</span></td>
+        </tr>`;
+      }).join("");
+    }
+
+    document.getElementById("page-info").textContent =
+      filtered.length === 0 ? "No brands found" :
+      `Showing ${Math.min(start+1, filtered.length)}–${Math.min(start+PER_PAGE, filtered.length)} of ${filtered.length} brand${filtered.length !== 1 ? "s" : ""}`;
+    document.getElementById("page-num").textContent = `Page ${page} of ${totalPages}`;
+    document.getElementById("btn-prev").disabled = page <= 1;
+    document.getElementById("btn-next").disabled = page >= totalPages;
+  }
+
+  /* =============================================
+     MODAL
+  ============================================= */
+  function openModal(idx) {
+    const b = BRANDS[idx];
+    document.getElementById("modal-brand-name").textContent = b.brand;
+    document.getElementById("modal-para").textContent = b.para;
+    document.getElementById("modal-ebay").href = EBAY_BASE + encodeURIComponent(b.ebay);
+
+    // Logo — try Wikimedia first, then logo.dev, then "No image found"
+    const logoWrap = document.getElementById("modal-logo");
+    if (b.logo) {
+      const logoImg = document.createElement("img");
+      logoImg.src = b.logo;
+      logoImg.alt = b.brand + " logo";
+      logoImg.onerror = function() { this.parentElement.innerHTML = "<div class=\"no-img-text\">No image<br>found</div>"; };
+      logoWrap.innerHTML = "";
+      logoWrap.appendChild(logoImg);
+    } else {
+      logoWrap.innerHTML = "<div class=\"no-img-text\">No image<br>found</div>";
+    }
+
+    // Score badges
+    const scoresEl = document.getElementById("modal-scores");
+    const ov = overall(b);
+    scoresEl.innerHTML =
+      ["uniqueness","history","prestige","value"].map(k =>
+        `<div class="score-badge"><strong>${b[k]}</strong>${k.charAt(0).toUpperCase()+k.slice(1)}</div>`
+      ).join("") +
+      `<div class="score-badge overall"><strong>${ov.toFixed(1)}</strong>Overall</div>`;
+
+    // Category sections
+    ["value","prestige","uniqueness","history"].forEach(cat => {
+      const c = b.categories[cat];
+      document.getElementById("name-" + cat).textContent = c.name;
+      document.getElementById("para-" + cat).textContent = c.para;
+      document.getElementById("ebay-" + cat).href = EBAY_BASE + encodeURIComponent(c.ebay);
+
+      const imgWrap = document.getElementById("img-" + cat);
+      if (c.img) {
+        const watchImg = document.createElement("img");
+        watchImg.src = c.img;
+        watchImg.alt = c.name;
+        watchImg.onerror = function() { this.parentElement.innerHTML = "<div class=\"no-img-text\">No image found</div>"; };
+        imgWrap.innerHTML = "";
+        imgWrap.appendChild(watchImg);
+      } else {
+        imgWrap.innerHTML = "<div class=\"no-img-text\">No image found</div>";
+      }
+
+      // Collapse all on open
+      document.getElementById("toggle-" + cat).classList.remove("open");
+      document.getElementById("cat-" + cat).classList.remove("open");
+    });
+
+    document.getElementById("modal-backdrop").classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeModal() {
+    document.getElementById("modal-backdrop").classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById("modal-backdrop")) closeModal();
+  }
+
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+  function toggleCat(cat) {
+    document.getElementById("toggle-" + cat).classList.toggle("open");
+    document.getElementById("cat-" + cat).classList.toggle("open");
+  }
+
+  /* ── Init ── */
+  updateStats();
+  filtered = [...BRANDS];
+  renderTable();
+</script>
+</body>
+</html>
