@@ -397,19 +397,6 @@
     .cat-toggle.open .cat-chevron { transform: rotate(180deg); }
     .cat-body { display: none; padding-bottom: 1rem; }
     .cat-body.open { display: block; }
-    .watch-img-wrap {
-      width: 100%;
-      height: 150px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--bg3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      margin-bottom: 10px;
-    }
-    .watch-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
     .watch-model-name {
       font-size: 14px;
       font-weight: 500;
@@ -443,6 +430,26 @@
       background: var(--gold);
       margin: 0.5rem 0 1.5rem;
       border-radius: 2px;
+    }
+    .msrp-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--gold-bg);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      font-size: 13px;
+      color: var(--gold2);
+      margin-bottom: 10px;
+    }
+    .msrp-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      opacity: 0.8;
+      margin-right: 4px;
     }
   </style>
 </head>
@@ -565,7 +572,7 @@
           <svg class="cat-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="cat-body" id="cat-value">
-          <div class="watch-img-wrap" id="img-value"><div class="no-img-text">No image found</div></div>
+          <div class="msrp-badge" id="msrp-value" style="display:none;"></div>
           <div class="watch-model-name" id="name-value"></div>
           <p class="watch-para" id="para-value"></p>
           <a class="ebay-link" id="ebay-value" href="#" target="_blank" rel="noopener">
@@ -585,7 +592,7 @@
           <svg class="cat-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="cat-body" id="cat-prestige">
-          <div class="watch-img-wrap" id="img-prestige"><div class="no-img-text">No image found</div></div>
+          <div class="msrp-badge" id="msrp-prestige" style="display:none;"></div>
           <div class="watch-model-name" id="name-prestige"></div>
           <p class="watch-para" id="para-prestige"></p>
           <a class="ebay-link" id="ebay-prestige" href="#" target="_blank" rel="noopener">
@@ -605,7 +612,7 @@
           <svg class="cat-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="cat-body" id="cat-uniqueness">
-          <div class="watch-img-wrap" id="img-uniqueness"><div class="no-img-text">No image found</div></div>
+          <div class="msrp-badge" id="msrp-uniqueness" style="display:none;"></div>
           <div class="watch-model-name" id="name-uniqueness"></div>
           <p class="watch-para" id="para-uniqueness"></p>
           <a class="ebay-link" id="ebay-uniqueness" href="#" target="_blank" rel="noopener">
@@ -625,7 +632,7 @@
           <svg class="cat-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="cat-body" id="cat-history">
-          <div class="watch-img-wrap" id="img-history"><div class="no-img-text">No image found</div></div>
+          <div class="msrp-badge" id="msrp-history" style="display:none;"></div>
           <div class="watch-model-name" id="name-history"></div>
           <p class="watch-para" id="para-history"></p>
           <a class="ebay-link" id="ebay-history" href="#" target="_blank" rel="noopener">
@@ -685,26 +692,26 @@
       categories: {
         value: {
           name: "Double 8 Origin Automatic (Ref. 87WA120041)",
+          msrp: "~$495",
           para: "The Double 8 Origin automatic represents the brand's best value proposition — a genuine Swiss-made automatic movement housed in a 42mm stainless steel case with sapphire crystal, at a price point that undercut almost every comparable Swiss competitor. For buyers seeking an entry into automatic watchmaking without compromising on Swiss provenance, this reference delivered exceptional bang for the buck.",
-          img: null,
           ebay: "88+Rue+du+Rhone+Double+8+Origin+Automatic"
         },
         prestige: {
           name: "Double 8 Origin Chronograph",
+          msrp: "~$695",
           para: "The chronograph variant of the Double 8 Origin sits at the top of the brand's prestige hierarchy. Featuring a Swiss-made chronograph movement, a polished steel case and the brand's signature Arabic '8' marker, it was the piece most associated with the brand's BAFTA partnership and its red-carpet-adjacent identity. Among collectors of the brand, it is the reference most likely to be remembered.",
-          img: null,
           ebay: "88+Rue+du+Rhone+Chronograph"
         },
         uniqueness: {
           name: "Essentia (Diamond Double 8 Origin)",
+          msrp: "~$1,200",
           para: "The Essentia is the most distinctive piece the brand produced — a 35mm ladies' watch set with exactly 88 diamonds around the bezel, a mother-of-pearl dial with a single diamond index at 8 o'clock, and a case back engraved with eight 8-shaped hour markers. The numerological symbolism woven into every design detail makes it the brand's most singular and conceptually coherent creation.",
-          img: null,
           ebay: "88+Rue+du+Rhone+Essentia+diamond"
         },
         history: {
           name: "Double 8 Origin Launch Edition (2012)",
+          msrp: "~$395",
           para: "The original Double 8 Origin collection, launched exclusively at Selfridges in July 2012, is the piece that defines the brand's short but genuine history. It marked the Bernheim grandsons stepping out from under the Raymond Weil legacy to build something independent, and was the watch that secured listings at major department stores across the US and Europe within its first year. For any future collector of the brand, the early launch references carry the most historical significance.",
-          img: null,
           ebay: "88+Rue+du+Rhone+Double+8+Origin+2012"
         }
       }
@@ -864,20 +871,18 @@
     ["value","prestige","uniqueness","history"].forEach(cat => {
       const c = b.categories[cat];
       document.getElementById("name-" + cat).textContent = c.name;
+      const msrpEl = document.getElementById("msrp-" + cat);
+      if (c.msrp) {
+        msrpEl.innerHTML = "<span class=\"msrp-label\">Launch MSRP</span>" + c.msrp;
+        msrpEl.style.display = "inline-flex";
+      } else {
+        msrpEl.innerHTML = "";
+        msrpEl.style.display = "none";
+      }
       document.getElementById("para-" + cat).textContent = c.para;
       document.getElementById("ebay-" + cat).href = EBAY_BASE + c.ebay;
 
-      const imgWrap = document.getElementById("img-" + cat);
-      if (c.img) {
-        const watchImg = document.createElement("img");
-        watchImg.src = c.img;
-        watchImg.alt = c.name;
-        watchImg.onerror = function() { this.parentElement.innerHTML = "<div class=\"no-img-text\">No image found</div>"; };
-        imgWrap.innerHTML = "";
-        imgWrap.appendChild(watchImg);
-      } else {
-        imgWrap.innerHTML = "<div class=\"no-img-text\">No image found</div>";
-      }
+
 
       // Collapse all on open
       document.getElementById("toggle-" + cat).classList.remove("open");
